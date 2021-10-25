@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="edit_text_margin">16dp</dimen>
+    <dimen name="notes_margin_top">8dp</dimen>
+    <dimen name="notes_padding_vertical">8dp</dimen>
+    <dimen name="note_padding_horizontal">16dp</dimen>
+</resources>
