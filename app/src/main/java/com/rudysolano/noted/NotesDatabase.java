@@ -66,16 +66,15 @@ public abstract class NotesDatabase extends RoomDatabase {
 
         //Populate ArrayList with notes that will be used to populate database. Make sure that each
         // note has a hashtag, and that the tag matches the hashtag.
-        Note note1 = new Note("Create notes with the goal of building a stronger " +
-                "#connection with your partner", "connection");
+        Note note1 = new Note("Include one #hashtag per note to categorize it",
+                "hashtag");
         note1.setId(1);
 
-        Note note2 = new Note("Include one #hashtag per note to categorize it",
-                "hashtag");
+        Note note2 = new Note("For example: I need to #buy new t-shirts", "buy");
         note2.setId(2);
 
-        Note note3 = new Note("For example: #favorite color to wear is black in the " +
-                "winter and yellow in the summer", "favorite");
+        Note note3 = new Note("You can #organize your notes using the sort " +
+                "icon at the top", "organize");
         note3.setId(3);
 
         initialNotes.add(note1);
