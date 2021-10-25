@@ -1,6 +1,5 @@
 package com.rudysolano.noted;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.SparseBooleanArray;
@@ -16,16 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MultiChoiceHelper {
     /**
-     * A handy ViewHolder base class which works with the MultiChoiceHelper
-     * and reproduces the default behavior of a ListView.
+     * A ViewHolder base class which works with the MultiChoiceHelper and reproduces the default
+     * behavior of a ListView.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         View.OnClickListener clickListener;
         MultiChoiceHelper multiChoiceHelper;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView ) {
             super(itemView);
+
             itemView.setOnClickListener(view -> {
                 if (isMultiChoiceActive()) {
                     int position = getAdapterPosition();
@@ -39,21 +38,26 @@ public class MultiChoiceHelper {
                     }
                 }
             });
+
             itemView.setOnLongClickListener(view -> {
                 if ((multiChoiceHelper == null) || isMultiChoiceActive()) {
                     return false;
                 }
+
                 int position = getAdapterPosition();
+
                 if (position != RecyclerView.NO_POSITION) {
                     multiChoiceHelper.setItemActivated(position, true, false);
                     updateActivatedState(position);
                 }
+
                 return true;
             });
         }
 
         void updateActivatedState(int position) {
             final boolean isActivated = multiChoiceHelper.isItemActivated(position);
+
             if (isActivated) {
                 itemView.setBackgroundResource(R.drawable.background_selected_note);
             } else {
@@ -67,6 +71,7 @@ public class MultiChoiceHelper {
 
         public void bind(MultiChoiceHelper multiChoiceHelper, int position) {
             this.multiChoiceHelper = multiChoiceHelper;
+
             if (multiChoiceHelper != null) {
                 updateActivatedState(position);
             }
@@ -108,8 +113,11 @@ public class MultiChoiceHelper {
                              @NonNull RecyclerView.Adapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
+
         adapter.registerAdapterDataObserver(new AdapterDataSetObserver());
+
         activatedPositions = new SparseBooleanArray(0);
+
         if (adapter.hasStableIds()) {
             activatedIdStates = new LongSparseArray<>(0);
         }
@@ -118,11 +126,14 @@ public class MultiChoiceHelper {
     public void setMultiChoiceModeListener(MultiChoiceModeListener listener) {
         if (listener == null) {
             multiChoiceModeCallback = null;
+
             return;
         }
+
         if (multiChoiceModeCallback == null) {
             multiChoiceModeCallback = new MultiChoiceModeWrapper();
         }
+
         multiChoiceModeCallback.setWrapped(listener);
     }
 
@@ -135,9 +146,8 @@ public class MultiChoiceHelper {
     }
 
     public long[] getActivatedItemIds() {
-        if (activatedIdStates == null) {
-        }
         final LongSparseArray<Integer> idStates = activatedIdStates;
+
         if (idStates == null) {
             return new long[0];
         }
@@ -156,10 +166,13 @@ public class MultiChoiceHelper {
         if (activatedItemCount > 0) {
             final int start = activatedPositions.keyAt(0);
             final int end = activatedPositions.keyAt(activatedPositions.size() - 1);
+
             activatedPositions.clear();
+
             if (activatedIdStates != null) {
                 activatedIdStates.clear();
             }
+
             activatedItemCount = 0;
 
             adapter.notifyItemRangeChanged(start, end - start + 1);
@@ -177,6 +190,7 @@ public class MultiChoiceHelper {
         }
 
         boolean oldValue = activatedPositions.get(position);
+
         activatedPositions.put(position, value);
 
         if (oldValue != value) {
@@ -216,20 +230,25 @@ public class MultiChoiceHelper {
 
     public Parcelable onSaveInstanceState() {
         SavedState savedState = new SavedState();
+
         savedState.activatedItemCount = activatedItemCount;
         savedState.isPositionActivated = clone(activatedPositions);
+
         if (activatedIdStates != null) {
             savedState.activatedIdStates = activatedIdStates.clone();
         }
+
         return savedState;
     }
 
     private static SparseBooleanArray clone(SparseBooleanArray original) {
         final int size = original.size();
         SparseBooleanArray clone = new SparseBooleanArray(size);
+
         for (int i = 0; i < size; ++i) {
             clone.append(original.keyAt(i), original.valueAt(i));
         }
+
         return clone;
     }
 
@@ -246,6 +265,7 @@ public class MultiChoiceHelper {
                 if (adapter.getItemCount() > 0) {
                     confirmActivatedPositions();
                 }
+
                 activity.getWindow().getDecorView().post(this::completeRestoreInstanceState);
             }
         }
@@ -267,6 +287,7 @@ public class MultiChoiceHelper {
             if (multiChoiceModeCallback == null) {
                 throw new IllegalStateException("No callback set");
             }
+
             choiceActionMode = activity.startSupportActionMode(multiChoiceModeCallback);
         }
     }
@@ -284,11 +305,14 @@ public class MultiChoiceHelper {
             activatedItemCount = in.readInt();
             isPositionActivated = in.readSparseBooleanArray();
             final int n = in.readInt();
+
             if (n >= 0) {
                 activatedIdStates = new LongSparseArray<>(n);
+
                 for (int i = 0; i < n; i++) {
                     final long key = in.readLong();
                     final int value = in.readInt();
+
                     activatedIdStates.append(key, value);
                 }
             }
@@ -298,8 +322,11 @@ public class MultiChoiceHelper {
         public void writeToParcel(Parcel out, int flags) {
             out.writeInt(activatedItemCount);
             out.writeSparseBooleanArray(isPositionActivated);
+
             final int n = activatedIdStates != null ? activatedIdStates.size() : -1;
+
             out.writeInt(n);
+
             for (int i = 0; i < n; i++) {
                 out.writeLong(activatedIdStates.keyAt(i));
                 out.writeInt(activatedIdStates.valueAt(i));
@@ -335,9 +362,11 @@ public class MultiChoiceHelper {
         if (itemCount == 0) {
             // Optimized path for empty adapter: remove all items.
             activatedPositions.clear();
+
             if (activatedIdStates != null) {
                 activatedIdStates.clear();
             }
+
             activatedItemCount = 0;
             activatedCountChanged = true;
         } else if (activatedIdStates != null) {
@@ -354,12 +383,16 @@ public class MultiChoiceHelper {
                     final int end = Math.min(lastPos + ACTIVATED_POSITION_SEARCH_DISTANCE,
                             itemCount);
                     boolean found = false;
+
                     for (int searchPos = start; searchPos < end; searchPos++) {
                         final long searchId = adapter.getItemId(searchPos);
+
                         if (id == searchId) {
                             found = true;
+
                             activatedPositions.put(searchPos, true);
                             activatedIdStates.setValueAt(index, searchPos);
+
                             break;
                         }
                     }
@@ -369,6 +402,7 @@ public class MultiChoiceHelper {
                         index--;
                         activatedItemCount--;
                         activatedCountChanged = true;
+
                         if (choiceActionMode != null && multiChoiceModeCallback != null) {
                             multiChoiceModeCallback.onItemActivatedStateChanged(choiceActionMode,
                                     lastPos, id, false);
@@ -386,6 +420,7 @@ public class MultiChoiceHelper {
                     activatedItemCount--;
                     activatedCountChanged = true;
                 }
+
                 activatedPositions.delete(activatedPositions.keyAt(i));
             }
         }

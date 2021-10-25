@@ -26,7 +26,7 @@ public class NotesAdapter extends ListAdapter<Note, NotesAdapter.ViewHolder> {
 
     private static OnNoteClickListener mListener;
     private Context context;
-    final com.rudysolano.noted.MultiChoiceHelper multiChoiceHelper;
+    final MultiChoiceHelper multiChoiceHelper;
 
     protected NotesAdapter(AppCompatActivity activity, NotesViewModel notesViewModel) {
         super(DIFF_CALLBACK);

@@ -13,8 +13,8 @@
     <!--Menu item titles -->
     <string name="delete_all_notes">Delete All Notes</string>
     <string name="sort">Sort</string>
-    <string name="sort_a_to_z">Sort by key phrase: A to Z</string>
-    <string name="sort_z_to_a">Sort by key phrase: Z to A</string>
+    <string name="sort_a_to_z">Sort by hashtag: A to Z</string>
+    <string name="sort_z_to_a">Sort by hashtag: Z to A</string>
     <string name="sort_by_order_of_entry_ascending">Oldest notes first</string>
     <string name="sort_by_order_of_entry_descending">Newest notes first</string>
     <string name="delete">Delete</string>
